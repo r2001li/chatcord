@@ -6,7 +6,8 @@ from discord.ext import commands
 
 from dotenv import load_dotenv
 
-from transformer import llm_engine
+from llm import llm_engine
+from config import config
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -15,7 +16,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 print("Loading model...")
 model = llm_engine.get_model()
-print(f"Loaded model: {llm_engine.LLM_MODEL_PATH}")
+print(f"Loaded model: {config.MODEL_PATH}")
 
 is_chatting = False
 
@@ -36,7 +37,7 @@ async def on_message(message):
     message_clean = message.clean_content
     print("Generating answer for prompt: ", message_clean)
     async with message.channel.typing():
-        answer = llm_engine.answer_prompt(prompt=message_clean, model=model)
+        answer = llm_engine.answer_prompt(prompt=message_clean, uname=bot.user.display_name, model=model)
     return await message.channel.send(answer)
 
 load_dotenv()

@@ -1,6 +1,6 @@
 __pycache__
 
 .env
-data/*
-models/*
+data/*.json
+models/*.gguf
 
