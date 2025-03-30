@@ -1,0 +1,6 @@
+[history]
+history_path = "data/history.json"
+
+[ollama]
+api_url = "http://localhost:11434/api/chat"
+model = "hf.co/bartowski/Ministral-8B-Instruct-2410-GGUF:IQ4_XS"
