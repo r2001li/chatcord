@@ -13,7 +13,7 @@ from asyncio import timeout
 with open("config/config.toml", 'rb') as f:
     config_data = tomllib.load(f)
 
-API_URL = config_data['ollama']['api_url']
+HOST_URL = config_data['ollama']['host_url']
 HISTORY_PATH = config_data['history']['history_path']
 
 def load_history():
@@ -37,7 +37,7 @@ intents.messages = True
 client = discord.Client(intents=intents)
 
 # Initialize Ollama client
-ollama_client = Client(host='http://localhost:11434')
+ollama_client = Client(host=HOST_URL)
 
 def generate_response(prompt):
     chat_history.append({
@@ -45,23 +45,11 @@ def generate_response(prompt):
         "content": prompt
         })
 
-    # save_history()
-
     system_prompt = [{
         "role": "system",
-        "content": "You are aser on the Discord messaging platform, and your username is " + str(client.user.name)
+        "content": "You are a user on the Discord messaging platform, and your username is " + str(client.user.name)
         }]
 
-    '''
-    data = {
-            "model": config_data['ollama']['model'],
-            "messages": system_prompt + chat_history,
-            "stream": False
-            }
-
-    response = requests.post(API_URL, json=data)
-    '''
-    
     response: ChatResponse = ollama_client.chat(
             model=config_data['ollama']['model'],
             messages=system_prompt + chat_history,
@@ -69,22 +57,6 @@ def generate_response(prompt):
             )
     
     print("Raw Response Content: ", response)
-
-    '''
-    try:
-        response_data = response.json()
-        assistant_message = response_data['message']['content']
-        chat_history.append({
-            "role": "assistant",
-            "content": assistant_message
-            })
-
-        save_history()
-
-        return assistant_message
-    except requests.exceptions.JSONDecodeError:
-        return "Error: Invalid API response"
-    '''
 
     assistant_message = response.message.content
     
